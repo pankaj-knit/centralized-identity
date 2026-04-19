@@ -1,0 +1,38 @@
+sidecar:
+  image:
+    repository: identity-fabric/sidecar
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+
+injector:
+  enabled: true
+  namespaceSelector:
+    matchLabels:
+      identity-fabric.io/inject: "true"
+  annotation: identity-fabric.io/inject
+
+modes:
+  # Bronze: passive observation only
+  passive:
+    validateTokens: false
+    enforcePolicy: false
+    reportTelemetry: true
+  # Silver: active validation + policy enforcement
+  active:
+    validateTokens: true
+    enforcePolicy: true
+    reportTelemetry: true
+
+config:
+  tokenExchangeEndpoint: http://token-exchange.identity-fabric.svc:8080
+  policyEndpoint: http://policy-engine.identity-fabric.svc:8181
+  jwksEndpoint: http://token-exchange.identity-fabric.svc:8080/.well-known/jwks.json
+  cacheTTL: 60s
+  requestTimeout: 2s

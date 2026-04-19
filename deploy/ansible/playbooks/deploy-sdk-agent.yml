@@ -1,0 +1,63 @@
+---
+- name: Deploy Identity Fabric SDK Agent on VMs
+  hosts: identity_fabric_vms
+  become: true
+  vars:
+    sdk_version: "0.1.0"
+    fabric_env: "{{ env | default('staging') }}"
+    token_exchange_url: "https://token-exchange.identity-fabric.internal"
+    policy_endpoint: "https://policy-engine.identity-fabric.internal"
+    jwks_endpoint: "https://token-exchange.identity-fabric.internal/.well-known/jwks.json"
+    agent_mode: "passive"  # passive (Bronze) or active (Silver)
+
+  tasks:
+    - name: Create identity-fabric system user
+      user:
+        name: identity-fabric
+        system: true
+        shell: /usr/sbin/nologin
+        home: /opt/identity-fabric
+
+    - name: Create config directory
+      file:
+        path: /etc/identity-fabric
+        state: directory
+        owner: identity-fabric
+        group: identity-fabric
+        mode: "0750"
+
+    - name: Download SDK agent binary
+      get_url:
+        url: "https://releases.identity-fabric.internal/agent/{{ sdk_version }}/identity-agent-linux-amd64"
+        dest: /usr/local/bin/identity-agent
+        mode: "0755"
+        checksum: "sha256:{{ agent_checksum }}"
+
+    - name: Deploy agent configuration
+      template:
+        src: templates/agent-config.yaml.j2
+        dest: /etc/identity-fabric/agent.yaml
+        owner: identity-fabric
+        group: identity-fabric
+        mode: "0640"
+      notify: Restart identity agent
+
+    - name: Deploy systemd service
+      template:
+        src: templates/identity-agent.service.j2
+        dest: /etc/systemd/system/identity-agent.service
+        mode: "0644"
+      notify: Restart identity agent
+
+    - name: Enable and start identity agent
+      systemd:
+        name: identity-agent
+        enabled: true
+        state: started
+        daemon_reload: true
+
+  handlers:
+    - name: Restart identity agent
+      systemd:
+        name: identity-agent
+        state: restarted

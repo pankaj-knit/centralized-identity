@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: "token-exchange"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["token-exchange:8080"]
+        labels:
+          service: "token-exchange"

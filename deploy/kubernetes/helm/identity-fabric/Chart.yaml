@@ -1,0 +1,15 @@
+apiVersion: v2
+name: identity-fabric
+description: Identity Fabric platform - Token Exchange, Policy Engine, Control Plane
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: vault
+    version: 0.27.0
+    repository: https://helm.releases.hashicorp.com
+    condition: vault.enabled
+  - name: keycloak
+    version: 18.4.0
+    repository: https://codecentric.github.io/helm-charts
+    condition: keycloak.enabled

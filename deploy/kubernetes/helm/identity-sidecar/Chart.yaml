@@ -1,0 +1,6 @@
+apiVersion: v2
+name: identity-sidecar
+description: Identity Fabric sidecar injector for automatic service enrollment
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

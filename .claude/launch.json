@@ -1,0 +1,84 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Docker Compose (Full Stack)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up"],
+      "port": 8080,
+      "cwd": "local-dev"
+    },
+    {
+      "name": "Token Exchange Service",
+      "runtimeExecutable": "go",
+      "runtimeArgs": ["run", "./cmd/server"],
+      "port": 8080,
+      "cwd": "services/token-exchange",
+      "env": {
+        "PORT": "8080",
+        "TRUSTED_ISSUERS": "legacy-jwt-issuer=http://localhost:9001/.well-known/jwks.json,medium",
+        "OPAQUE_VALIDATE_URL": "http://localhost:9002/validate"
+      }
+    },
+    {
+      "name": "Legacy JWT App (Mock)",
+      "runtimeExecutable": "go",
+      "runtimeArgs": ["run", "."],
+      "port": 9001,
+      "cwd": "local-dev/mock-services/legacy-jwt-app",
+      "env": { "PORT": "9001" }
+    },
+    {
+      "name": "Opaque Token App (Mock)",
+      "runtimeExecutable": "go",
+      "runtimeArgs": ["run", "."],
+      "port": 9002,
+      "cwd": "local-dev/mock-services/opaque-token-app",
+      "env": { "PORT": "9002" }
+    },
+    {
+      "name": "SAML App (Mock)",
+      "runtimeExecutable": "go",
+      "runtimeArgs": ["run", "."],
+      "port": 9003,
+      "cwd": "local-dev/mock-services/saml-app",
+      "env": { "PORT": "9003" }
+    },
+    {
+      "name": "Keycloak App (Mock)",
+      "runtimeExecutable": "go",
+      "runtimeArgs": ["run", "."],
+      "port": 9004,
+      "cwd": "local-dev/mock-services/keycloak-app",
+      "env": { "PORT": "9004", "KEYCLOAK_URL": "http://localhost:8443" }
+    },
+    {
+      "name": "Keycloak (Docker)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "keycloak", "keycloak-db"],
+      "port": 8443,
+      "cwd": "local-dev"
+    },
+    {
+      "name": "Vault (Docker)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "vault"],
+      "port": 8200,
+      "cwd": "local-dev"
+    },
+    {
+      "name": "OPA Policy Server (Docker)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "opa"],
+      "port": 8181,
+      "cwd": "local-dev"
+    },
+    {
+      "name": "Redis (Docker)",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "redis"],
+      "port": 6379,
+      "cwd": "local-dev"
+    }
+  ]
+}

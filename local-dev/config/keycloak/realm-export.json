@@ -1,0 +1,121 @@
+{
+  "realm": "identity-fabric",
+  "enabled": true,
+  "displayName": "Identity Fabric",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "roles": {
+    "realm": [
+      {
+        "name": "order.read",
+        "description": "Read access to order service"
+      },
+      {
+        "name": "order.write",
+        "description": "Write access to order service"
+      },
+      {
+        "name": "payment.process",
+        "description": "Process payments"
+      },
+      {
+        "name": "payment.refund",
+        "description": "Process refunds"
+      },
+      {
+        "name": "admin",
+        "description": "Admin role"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "sample-app",
+      "name": "Sample Application",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["http://localhost:9004/*"],
+      "webOrigins": ["http://localhost:9004"],
+      "defaultClientScopes": ["openid", "profile", "email"]
+    },
+    {
+      "clientId": "token-exchange-service",
+      "name": "Token Exchange Service",
+      "enabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "secret": "token-exchange-secret",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "order-service",
+      "name": "Order Service",
+      "enabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "secret": "order-service-secret",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    },
+    {
+      "clientId": "payment-service",
+      "name": "Payment Service",
+      "enabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "secret": "payment-service-secret",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  ],
+  "users": [
+    {
+      "username": "test-user",
+      "enabled": true,
+      "email": "test@example.com",
+      "firstName": "Test",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["order.read", "order.write"]
+    },
+    {
+      "username": "pci-user",
+      "enabled": true,
+      "email": "pci@example.com",
+      "firstName": "PCI",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["order.read", "order.write", "payment.process"]
+    },
+    {
+      "username": "admin-user",
+      "enabled": true,
+      "email": "admin@example.com",
+      "firstName": "Admin",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["admin", "order.read", "order.write", "payment.process", "payment.refund"]
+    }
+  ]
+}
